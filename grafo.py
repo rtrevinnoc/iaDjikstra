@@ -1,3 +1,5 @@
+import networkx as nx
+import matplotlib.pyplot as plt
 # grafo no dirigido
 # admite lazos 
 
@@ -8,6 +10,10 @@ class Graph():
     # arcos es una lista de los nodos adyacentes 
     def __init__(self, graph={}):
         self.graph = graph
+
+        self.nxGraph = nx.Graph()
+        self.nxGraph.add_nodes_from(self.nodes())
+        self.nxGraph.add_edges_from([(edge[0], edge[1][0], {'weight': edge[1][1]}) for edge in self.edges()])
 
     # Devuelve una representación formal del contenido del grafo
     def __repr__(self):
@@ -175,3 +181,13 @@ class Graph():
     def existEdge(self, edge):
         n1, n2 = tuple(edge)
         return (n1, n2) in self.edges(n1) or (n2, n1) in self.edges(n2)
+
+    def drawGraph(self):
+        positions = nx.spring_layout(self.nxGraph)
+        colors = list(nx.coloring.greedy_color(self.nxGraph).values())
+        nx.draw_networkx_nodes(self.nxGraph, positions, node_color=colors)
+        nx.draw_networkx_labels(self.nxGraph, positions)
+        nx.draw_networkx_edges(self.nxGraph, positions, edgelist=self.nxGraph.edges)
+        nx.draw_networkx_edge_labels(self.nxGraph, positions, edge_labels=nx.get_edge_attributes(self.nxGraph, 'weight'), font_weight='bold')
+
+        plt.show()

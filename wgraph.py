@@ -1,8 +1,5 @@
-# Grafo ponderado
-# los arcos son bidireccionales, con peso único
-
 import grafo as GR
-
+import math
 
 class WeightedGraph(GR.Graph):
     # Constructor, por defecto crea un diccionario vacío
@@ -137,3 +134,39 @@ class WeightedGraph(GR.Graph):
             node = predecessor[node]
         # Devuelve una tupla con el camino y el peso total
         return (path[::-1], visited[end])
+
+    def getNodeIndex(self, node):
+        return list(self.graph.keys()).index(node)
+
+    def printPaths(self, parents, index):
+        if (parents[index] == -1):
+            print("->(" + str(self.nodes()[index]) + ")", end="")
+            return;
+        self.printPaths(parents, parents[index])
+        print("->(" + str(self.nodes()[index]) + ")", end="")
+
+    def djikstra(self, start):
+        distances = [math.inf] * self.order()
+        selected = [False] * self.order()
+        paths = [-1] * self.order()
+        numEdge = 0
+
+        distances[self.getNodeIndex(start)] = 0
+        selected[self.getNodeIndex(start)] = True
+
+        while (numEdge < self.order()):
+
+            for index, vertex in enumerate(self):
+                if(selected[self.getNodeIndex(vertex)]):
+                    for jndex, edgeVertex in enumerate(self.edges(vertex)):
+                        if(distances[self.getNodeIndex(edgeVertex[1][0])] > edgeVertex[1][1] and not selected[self.getNodeIndex(edgeVertex[1][0])]):
+                            distances[self.getNodeIndex(edgeVertex[1][0])] = distances[self.getNodeIndex(vertex)] + edgeVertex[1][1]
+                            paths[self.getNodeIndex(edgeVertex[1][0])] = self.getNodeIndex(vertex)
+                        selected[self.getNodeIndex(edgeVertex[1][0])] = True;
+            numEdge += 1;
+
+        print("Distancias desde el vertice:", start)
+        for index, vertex in enumerate(self):
+            print("[", end="")
+            self.printPaths(paths, index)
+            print("]: -> " + str(distances[index]))
