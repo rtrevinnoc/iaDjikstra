@@ -20,7 +20,7 @@ print("# Algoritmo de Djikstra desde el vertice A")
 # g.djikstra("D")
 
 # Dibujar el grafo
-# g.drawGraph()
+g.drawGraph()
 
 # Funcion para crear listas de adyacencia aleatorias con cierto numero (n) de nodos con cierto umbral para los nodos a crear
 def random_graph(n, p, directed=False):
@@ -56,7 +56,6 @@ class Experiment:
         for x in range(self.trials):
             graphMat = random_graph(self.currentStep * self.increment, self.prob)
             graph = wgf.WeightedGraph(graphMat)
-            print(graph.order())
             start = time.time()
             graph.djikstra(0)
             end = time.time()
